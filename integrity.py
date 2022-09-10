@@ -9,7 +9,7 @@ def take_snapshot(path):
     for filename in glob.iglob(path + "**", recursive=True):
         print(filename)
         if os.path.isfile(filename):
-            sys_map.update({filename: sha256sum(filename)})
+            sys_map.update({filename: [sha256sum(filename), os.path.getsize(filename)]})
     print("\nDone.\n")
     return sys_map
 
@@ -28,12 +28,15 @@ def check_integrity(sys_map_before, path):
                 f.write("\nFound new trace: " + filename + " was created on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
                 f.write("\n----------------------------------------------------------------------------------\n")
             if(filename in sys_map_before):
-                hash_before = sys_map_before[filename]
+                hash_before = sys_map_before[filename][0]
                 hash_after = sha256sum(filename)
+                size_before = sys_map_before[filename][1]
+                size_after = os.path.getsize(filename)
+
                 if(hash_before != hash_after):
-                    f.write("\nFile - " + filename + " has changed on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
-                    f.write("Original hash : " + hash_before + "\n")
-                    f.write("Changed hash : " + hash_after + "\n")
+                    f.write("\nFile - " + filename + " was changed on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
+                    f.write("Original hash : " + hash_before + ", Size: " + str(size_before) + "B\n")
+                    f.write("New hash : " + hash_after + ", Size: " + str(size_after) + "B\n")
                     f.write("\n----------------------------------------------------------------------------------\n")
     f.close()
     data.show_traces()

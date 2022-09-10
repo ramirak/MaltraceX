@@ -26,9 +26,9 @@ Found new trace: /mnt/c/Windows/mal.exe was created on: Sat Sep 10 13:45:17 2022
 
 ----------------------------------------------------------------------------------
 
-File - /mnt/c/Windows/system32/svchost.exe has changed on: Sat Sep 10 13:45:17 2022
+File - /mnt/c/Windows/system32/svchost.exe was changed on: Sat Sep 10 13:45:17 2022
 Original hash : b51183de9bcc1294835d162e757053939ef666dcb8dc083d1326c3c33dd4edbc
-Changed hash : 83596dc0a40eee825a51c6844c70a014b28776c1516d53114b71c0ea9c8fd506
+New hash : 83596dc0a40eee825a51c6844c70a014b28776c1516d53114b71c0ea9c8fd506
 
 ----------------------------------------------------------------------------------
 ```
