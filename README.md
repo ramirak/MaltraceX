@@ -13,6 +13,7 @@
 - After you execute any possible malicious file you can run the program again and check the integrity.
 - The new mapping will be compared to the old mapping and results will be outputed to a 'traces.mt' file.
 - Any update to an existing file or creating of a file will be notified.
+- Of course changes to some system files happens all the time so you might see many changes not related to the malicious app.
 
 ## Example log
 

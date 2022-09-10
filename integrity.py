@@ -2,6 +2,7 @@ import glob
 import hashlib
 import os
 import data
+import time
 
 def take_snapshot(path):
     sys_map = {}
@@ -24,13 +25,13 @@ def check_integrity(sys_map_before, path):
     for filename in glob.iglob(path + '**', recursive=True):
         if os.path.isfile(filename):
             if(filename not in sys_map_before):
-                f.write("\nFound new trace: " + filename + "\n")
+                f.write("\nFound new trace: " + filename + " was created on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
                 f.write("\n----------------------------------------------------------------------------------\n")
             if(filename in sys_map_before):
                 hash_before = sys_map_before[filename]
                 hash_after = sha256sum(filename)
                 if(hash_before != hash_after):
-                    f.write("\nFile - " + filename + " has changed.\n")
+                    f.write("\nFile - " + filename + " has changed on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
                     f.write("Original hash : " + hash_before + "\n")
                     f.write("Changed hash : " + hash_after + "\n")
                     f.write("\n----------------------------------------------------------------------------------\n")
