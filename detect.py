@@ -19,7 +19,8 @@ def get_report(hash):
     result += "Total Malicious: " + str(report_attr["last_analysis_stats"]["malicious"]) + "\n"
     result += "Total Undetected: " + str(report_attr["last_analysis_stats"]["undetected"]) + "\n"
     result += "File Reputation: " + str(report_attr["reputation"]) + "\n"
-    result += "Suggested label: " + report_attr["popular_threat_classification"]["suggested_threat_label"] + "\n"
+    if "popular_threat_classification" in report_attr:
+        result += "Suggested label: " + report_attr["popular_threat_classification"]["suggested_threat_label"] + "\n"
     result += "---------------------------------------------\nEngines results:\n---------------------------------------------\n"
     engines_list = report_attr["last_analysis_results"]
     for i in engines_list:
