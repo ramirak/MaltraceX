@@ -17,7 +17,7 @@ def take_snapshot(path):
 def check_integrity(sys_map_before, path, scan):
     f = open("traces.mt", "w")
     f.write("----------------------------------------------------------------------------------\n")
-    f.write("--------------------------------Maltrace Log File---------------------------------\n")
+    f.write("--------------------------------MaltraceX Log File---------------------------------\n")
     f.write("----------------------------------------------------------------------------------\n")
     if not bool(sys_map_before):
         print("\nNo snapshot found\n")

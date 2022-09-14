@@ -1,5 +1,5 @@
-# Maltrace
-## Check your system integrity
+# MaltraceX
+## Check your system integrity and scan for malicious files
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/63206167/189479573-a1c6060a-6069-44db-bdae-b3784ef352d5.png" width="200">
@@ -9,6 +9,7 @@
 
 - Before you decide to execute any unknown application take a snapshot of your system.
 - Change the scanning path in maltrace.conf to the path you would like to scan.
+- Choose wheter you want to scan new hashes with Virus Total and add your VT api key.
 - The mapping of your system will be saved to a 'hashes.mt' file.
 - After you execute any possible malicious file you can run the program again and check the integrity.
 - The new mapping will be compared to the old mapping and results will be outputed to a 'traces.mt' file.
@@ -25,7 +26,7 @@
 
 ```
 ----------------------------------------------------------------------------------
---------------------------------Maltrace Log File---------------------------------
+--------------------------------MaltraceX Log File---------------------------------
 ----------------------------------------------------------------------------------
 
 Found new trace: /mnt/c/Windows/mal.exe was created on: Sat Sep 10 13:45:17 2022
