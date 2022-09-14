@@ -27,7 +27,7 @@ def main_menu():
             sys_map = integrity.take_snapshot(path)
             data.dump_to_file(sys_map, hashes_file)
         elif(choice == 2):
-            integrity.check_integrity(sys_map, path)
+            integrity.check_integrity(sys_map, path,bool(conf["scan"]))
         elif(choice == 3):
             exit(0)
         else:

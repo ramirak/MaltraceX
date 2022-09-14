@@ -3,7 +3,7 @@ import hashlib
 import os
 import data
 import time
-
+import detect
 def take_snapshot(path):
     sys_map = {}
     for filename in glob.iglob(path + "**", recursive=True):
@@ -14,7 +14,7 @@ def take_snapshot(path):
     return sys_map
 
 
-def check_integrity(sys_map_before, path):
+def check_integrity(sys_map_before, path, scan):
     f = open("traces.mt", "w")
     f.write("----------------------------------------------------------------------------------\n")
     f.write("--------------------------------Maltrace Log File---------------------------------\n")
@@ -26,8 +26,12 @@ def check_integrity(sys_map_before, path):
         if os.path.isfile(filename):
             if(filename not in sys_map_before):
                 f.write("\nFound new trace: " + filename + " was created on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
+                new_hash = sha256sum(filename)
+                f.write("File Hash : " + new_hash)
+                if scan:
+                    f.write(detect.get_report(new_hash))
                 f.write("\n----------------------------------------------------------------------------------\n")
-            if(filename in sys_map_before):
+            else:
                 hash_before = sys_map_before[filename][0]
                 hash_after = sha256sum(filename)
                 size_before = sys_map_before[filename][1]
@@ -37,6 +41,8 @@ def check_integrity(sys_map_before, path):
                     f.write("\nFile - " + filename + " was changed on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))
                     f.write("Original hash : " + hash_before + ", Size: " + str(size_before) + "B\n")
                     f.write("New hash : " + hash_after + ", Size: " + str(size_after) + "B\n")
+                    if scan:
+                        f.write(detect.get_report(hash_after))
                     f.write("\n----------------------------------------------------------------------------------\n")
     f.close()
     data.show_traces()
