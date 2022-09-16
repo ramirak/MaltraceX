@@ -125,6 +125,15 @@ Original hash : b51183de9bcc1294835d162e757053939ef666dcb8dc083d1326c3c33dd4edbc
 New hash : 83596dc0a40eee825a51c6844c70a014b28776c1516d53114b71c0ea9c8fd506
 Could not find file's hash in Virus Total database
 
-----------------------------------------------------------------------------------
+-------------------------------------Windows Registry lookup:--------------------------------------
 
+Found new registry key:
+HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce
+Key: C:\\Windows\System32\havoc.exe
+----------------------------------------------------------------------------------
+Found new value for: Common Startup
+In: HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
+Old Value: C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
+New Value: C:\ProgramData\046a106a85206eceb96acfc8086d25a0
+----------------------------------------------------------------------------------
 ```

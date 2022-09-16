@@ -19,9 +19,9 @@ def take_snapshot(path):
 
 def check_integrity(sys_map_before, reg_map, path, scan):
     f = open("traces.mt", "w")
-    f.write("----------------------------------------------------------------------------------\n")
-    f.write("--------------------------------MaltraceX Log File---------------------------------\n")
-    f.write("----------------------------------------------------------------------------------\n")
+    f.write("---------------------------------------------------------------------------------------------------\n")
+    f.write("----------------------------------------MaltraceX Log File-----------------------------------------\n")
+    f.write("---------------------------------------------------------------------------------------------------\n")
     if not bool(sys_map_before):
         print("\nNo snapshot found\n")
         return
@@ -50,19 +50,23 @@ def check_integrity(sys_map_before, reg_map, path, scan):
                         f.write(detect.get_report(hash_after))
                     f.write("\n----------------------------------------------------------------------------------\n")
 
-    ## Now check common registry locations
-    new_reg_map = get_reg_dict()
-    for folder in new_reg_map:
-        for key in new_reg_map[folder]:
-            new_val = new_reg_map[folder][key]
-            if folder not in reg_map:
-                continue
-            elif key not in reg_map[folder]:
-                f.write("Found new registry key: " + key + "\n" + "Value: " + new_val)
-                f.write("\n----------------------------------------------------------------------------------\n")
-            elif new_val != reg_map[folder][key]:
-                f.write("Found new value: " + key + "\n" + "Old Value: " + reg_map[folder][key]  + "\nNew Value: " + new_val)
-                f.write("\n----------------------------------------------------------------------------------\n")
+    ## Windows only
+    if os.name == 'nt':
+        ## Now check common registry locations
+    
+        f.write("\n-------------------------------------Windows Registry lookup:--------------------------------------\n\n")
+        new_reg_map = get_reg_dict()
+        for folder in new_reg_map:
+            for key in new_reg_map[folder][1]:
+                new_val = new_reg_map[folder][1][key]
+                if folder not in reg_map:
+                    continue
+                elif key not in reg_map[folder][1]:
+                    f.write("Found new registry key:\nIn: " + new_reg_map[folder][0] + "\\" + folder + "\nKey: " + key + ", Value: " + new_val)
+                    f.write("\n----------------------------------------------------------------------------------\n")
+                elif new_val != reg_map[folder][1][key]:
+                    f.write("Found new value for: " + key + "\nIn: " + new_reg_map[folder][0] + "\\" + folder +  "\nOld Value: " + reg_map[folder][1][key]  + "\nNew Value: " + new_val)
+                    f.write("\n----------------------------------------------------------------------------------\n")
                 
     f.close()
     data.show_traces()
