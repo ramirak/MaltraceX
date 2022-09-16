@@ -9,8 +9,9 @@ reg_file = "reg_map.mt"
 conf_file = "maltrace.conf"
 
 def init():
-    with open('logo.txt', 'r') as f:
-        print(f.read())
+    if os.path.isfile('logo.txt'):
+        with open('logo.txt', 'r') as f:
+            print(f.read())
     while(True):
         main_menu()
    
