@@ -14,6 +14,7 @@
 - After you execute any possible malicious file you can run the program again and check the integrity.
 - The new mapping will be compared to the old mapping and results will be outputed to a 'traces.mt' file.
 - Any update to an existing file or creating of a file will be notified.
+- You will be notified about changes to common registry keys or creation of new ones.
 - Of course changes to some system files happens all the time so you might see many changes not related to the malicious app.
 
 ## Features 
@@ -23,6 +24,7 @@
 - Virus Total integration - Choose whether to compare file hashes with VT database to get detection report from dozens of AVs.
 - List specific folder files and easily choose which file to scan
 - Windows Registry integration - Keep an eye on common registy keys used by different malwares and get notified about new keys.
+- Add registry paths to 'registry.list' to make the registry scan more comprehensive 
 
 ## Example log
 
