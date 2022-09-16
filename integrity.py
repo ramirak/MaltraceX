@@ -1,9 +1,12 @@
 import glob
 import hashlib
 import os
+import re
 import data
 import time
 import detect
+from reg_scan import get_reg_dict
+
 def take_snapshot(path):
     sys_map = {}
     for filename in glob.iglob(path + "**", recursive=True):
@@ -11,10 +14,10 @@ def take_snapshot(path):
         if os.path.isfile(filename):
             sys_map.update({filename: [sha256sum(filename), os.path.getsize(filename)]})
     print("\nDone.\n")
-    return sys_map
+    return sys_map, get_reg_dict()
 
 
-def check_integrity(sys_map_before, path, scan):
+def check_integrity(sys_map_before, reg_map, path, scan):
     f = open("traces.mt", "w")
     f.write("----------------------------------------------------------------------------------\n")
     f.write("--------------------------------MaltraceX Log File---------------------------------\n")
@@ -22,6 +25,8 @@ def check_integrity(sys_map_before, path, scan):
     if not bool(sys_map_before):
         print("\nNo snapshot found\n")
         return
+
+    ## First check system files
     for filename in glob.iglob(path + '**', recursive=True):
         if os.path.isfile(filename):
             if(filename not in sys_map_before):
@@ -44,6 +49,21 @@ def check_integrity(sys_map_before, path, scan):
                     if scan:
                         f.write(detect.get_report(hash_after))
                     f.write("\n----------------------------------------------------------------------------------\n")
+
+    ## Now check common registry locations
+    new_reg_map = get_reg_dict()
+    for folder in new_reg_map:
+        for key in new_reg_map[folder]:
+            new_val = new_reg_map[folder][key]
+            if folder not in reg_map:
+                continue
+            elif key not in reg_map[folder]:
+                f.write("Found new registry key: " + key + "\n" + "Value: " + new_val)
+                f.write("\n----------------------------------------------------------------------------------\n")
+            elif new_val != reg_map[folder][key]:
+                f.write("Found new value: " + key + "\n" + "Old Value: " + reg_map[folder][key]  + "\nNew Value: " + new_val)
+                f.write("\n----------------------------------------------------------------------------------\n")
+                
     f.close()
     data.show_traces()
 

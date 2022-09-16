@@ -22,6 +22,7 @@
 - Find out if new files were created in your chosen system path.
 - Virus Total integration - Choose whether to compare file hashes with VT database to get detection report from dozens of AVs.
 - List specific folder files and easily choose which file to scan
+- Windows Registry integration - Keep an eye on common registy keys used by different malwares and get notified about new keys.
 
 ## Example log
 
