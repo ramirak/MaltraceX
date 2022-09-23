@@ -1,4 +1,4 @@
-from data import retrieve_from_file
+from Data.files import retrieve_from_file
 import os
 
 ## Windows only
@@ -30,7 +30,8 @@ if os.name == 'nt':
 
 
     def get_reg_dict():
-        data = retrieve_from_file("registry.list")
+        paths = retrieve_from_file("Conf/paths.conf")
+        data = retrieve_from_file(paths["registry"])
         x = 0
         registry_dict = {}
         for reg in data["commonReg"]:

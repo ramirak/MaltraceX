@@ -1,9 +1,10 @@
 import requests
 import json 
-session = requests.Session()
-session.headers = {'X-Apikey': '<api-key>'}
 
-def get_report(hash):
+#session = requests.Session()
+#session.headers = {'X-Apikey': '<api-key>'}
+
+def get_report(hash, header_flag):
     url = "https://www.virustotal.com/api/v3/files/" + hash
     headers = {"accept": "application/json", "x-apikey": "4ac12be1e6eccf9a2dbd6d526531f489e322dd88b906ad2fccdc377a7481e18c"}
     response = requests.get(url, headers=headers)
@@ -13,9 +14,10 @@ def get_report(hash):
     
     res = json.loads(response.text)
     report_attr = res["data"]["attributes"]
-    result += "---------------------------------------------------------------------------------------------------\n"
-    result += "----------------------------------------Virus Total report:----------------------------------------\n"
-    result += "---------------------------------------------------------------------------------------------------\n"
+    if header_flag:
+        result += "---------------------------------------------------------------------------------------------------\n"
+        result += "----------------------------------------Virus Total report:----------------------------------------\n"
+        result += "---------------------------------------------------------------------------------------------------\n"
     result += "Total Malicious: " + str(report_attr["last_analysis_stats"]["malicious"]) + "\n"
     result += "Total Undetected: " + str(report_attr["last_analysis_stats"]["undetected"]) + "\n"
     result += "File Reputation: " + str(report_attr["reputation"]) + "\n"

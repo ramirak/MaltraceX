@@ -5,18 +5,6 @@
 <img src="https://user-images.githubusercontent.com/63206167/189479573-a1c6060a-6069-44db-bdae-b3784ef352d5.png" width="200">
 </p>
 
-## How-To
-
-- Before you decide to execute any unknown application take a snapshot of your system.
-- Change the scanning path in maltrace.conf to the path you would like to scan.
-- Choose wheter you want to scan new hashes with Virus Total and add your VT api key.
-- The mapping of your system will be saved to a 'hashes.mt' file.
-- After you execute any possible malicious file you can run the program again and check the integrity.
-- The new mapping will be compared to the old mapping and results will be outputed to a 'traces.mt' file.
-- Any update to an existing file or creating of a file will be notified.
-- You will be notified about changes to common registry keys or creation of new ones.
-- Of course changes to some system files happens all the time so you might see many changes not related to the malicious app.
-
 ## Features 
 - Take a snapshot of your system, either on Windows or Linux.
 - Scan your system again and compare against your old snapshot and figure out which changes were made.
@@ -24,7 +12,13 @@
 - Virus Total integration - Choose whether to compare file hashes with VT database to get detection report from dozens of AVs.
 - List specific folder files and easily choose which file to scan
 - Windows Registry integration - Keep an eye on common registy keys used by different malwares and get notified about new keys.
-- Add registry paths to 'registry.list' to make the registry scan more comprehensive 
+- Analyze the PE struct of a file. Reports will be appended one after another with date so you can identifiy changes easily. 
+
+## Configure
+- Change the scanning path in Conf/maltrace.conf to the path you would like to scan.
+- Choose wheter you want to scan new hashes with Virus Total. If you do want, add your VT api key.
+- Adjust the registry scan by adding or removing paths from Conf/registry.conf.
+- Adjust logging path to your needs from Conf/paths.conf.
 
 ## Example log
 
