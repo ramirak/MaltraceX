@@ -11,6 +11,8 @@ paths_file = "Conf/paths.conf"
 VT_SCAN, PE_ANALYZE, *_ = range(5)
 
 def init():
+    if not os.path.exists("Logs"):
+        os.makedirs("Logs")
     if os.path.isfile('Imgs/logo.txt'):
         with open('Imgs/logo.txt', 'r') as f:
             print(f.read())
