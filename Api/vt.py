@@ -1,16 +1,24 @@
 import requests
 import json 
+import Data.files as files
 
-#session = requests.Session()
-#session.headers = {'X-Apikey': '<api-key>'}
+conf_file = "Conf/maltrace.conf"
 
 def get_report(hash, header_flag):
+    conf = files.retrieve_from_file(conf_file)
+    api_k = conf["vt_key"]
+    
+    if api_k == "":
+        print("Please set your api key")
+        return
+
     url = "https://www.virustotal.com/api/v3/files/" + hash
-    headers = {"accept": "application/json", "x-apikey": "4ac12be1e6eccf9a2dbd6d526531f489e322dd88b906ad2fccdc377a7481e18c"}
+
+    headers = {"accept": "application/json", "x-apikey": api_k}
     response = requests.get(url, headers=headers)
     result = ""
     if response.status_code != 200:
-        return "Could not find file's hash in Virus Total database"
+        return "Not found"
     
     res = json.loads(response.text)
     report_attr = res["data"]["attributes"]
