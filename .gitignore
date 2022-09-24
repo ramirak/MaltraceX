@@ -22,7 +22,7 @@ __pycache__/
 
 # maltrace extension
 *.mt
-*.conf
+
 
 # Distribution / packaging
 .Python
