@@ -18,7 +18,7 @@
 - List all connections and their corresponding PID.
 
 <p align="center">
-<img src="Imgs/screenshot1.png" width="800">
+<img src="Imgs/Screenshot1.png" width="800">
 </p>
 
 ## Configure
