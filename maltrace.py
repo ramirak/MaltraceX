@@ -5,20 +5,25 @@ import Data.files as files
 import Analysis.integrity as integrity
 from Api.vt import get_report
 from datetime import datetime
-
 from Utils.string_utils import format_proc
 
 conf_file = "Conf/maltrace.conf"
 paths_file = "Conf/paths.conf"
+
+logo = ("               .__   __                      \n"
+"  _____ _____  |  |_/  |_____________    ____  ____  \n"
+" /      \__  \ |  |\   __\_  __ \__  \ _/ ___\/ __ \ \n"
+"|  Y Y  \/ __ \|  |_|  |  |  | \// __  \  \__\  ___/ \n"
+"|__|_|  (____  /____/__|  |__|  (____  /\___  >___  >\n"
+"      \/     \/                      \/     \/    \/ \n")
+
 
 VT_SCAN, PE_ANALYZE, *_ = range(5)
 
 def init():
     if not os.path.exists("Logs"):
         os.makedirs("Logs")
-    if os.path.isfile('Imgs/logo.txt'):
-        with open('Imgs/logo.txt', 'r') as f:
-            print(f.read())
+    print(logo)
     while(True):
         main_menu()
    
