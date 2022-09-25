@@ -1,9 +1,12 @@
 import os, glob
+from Analysis.memory import get_connections, get_procs
 from Analysis.pestruct import get_dlls, get_dos_headers, pe_load
 import Data.files as files
 import Analysis.integrity as integrity
 from Api.vt import get_report
 from datetime import datetime
+
+from Utils.string_utils import format_proc
 
 conf_file = "Conf/maltrace.conf"
 paths_file = "Conf/paths.conf"
@@ -21,31 +24,36 @@ def init():
    
 
 def main_menu():
-    sys_map, reg_map = {} , {}
+    sys_map, reg_map, proc_map = {} , {}, {}
     conf, paths = files.retrieve_from_file(conf_file), files.retrieve_from_file(paths_file)
-    scan_path, hashes_path, registry_path, reglog_path = conf["path"], paths["hashes"], paths["registry"], paths["reglog"]
+    scan_path, hashes_path, registry_path, reglog_path, procs_path = conf["path"], paths["hashes"], paths["registry"], paths["reglog"], paths["procs"]
     scan, api_k = bool(conf["scan"]), conf["vt_key"]
 
     if os.path.exists(hashes_path):
         sys_map = files.retrieve_from_file(hashes_path)
     if os.path.exists(registry_path):
         reg_map = files.retrieve_from_file(registry_path)    
+    if os.path.exists(procs_path):
+        proc_map = files.retrieve_from_file(procs_path)    
 
     choice = -1
     while(choice == -1):
         print("(1) Take system Snapshot")
         print("(2) Test system integrity")
         print("(3) Scan a file")
-        print("(4) Analyze")
-        print("(5) Exit")
+        print("(4) Analyze PE")
+        print("(5) Show processes")
+        print("(6) Show connections")
+        print("(7) Exit")
 
         choice = assert_choice(input("\n> "))
         if(choice == 1):
-            sys_map, reg_map = integrity.take_snapshot(scan_path)
+            sys_map, reg_map, proc_map = integrity.take_snapshot(scan_path)
             files.dump_to_file(sys_map, hashes_path)
             files.dump_to_file(reg_map, reglog_path)
+            files.dump_to_file(proc_map, procs_path)
         elif(choice == 2):
-            integrity.check_integrity(sys_map, reg_map, scan_path, scan)
+            integrity.check_integrity(sys_map, reg_map, proc_map,scan_path, scan)
         elif(choice == 3):
             if api_k == "":
                 print("\nPlease set your Virus Total api key first\n")
@@ -58,6 +66,12 @@ def main_menu():
             if os.path.isdir(path):
                 files_menu(path, PE_ANALYZE)
         elif(choice == 5):
+            all_procs = get_procs()
+            for proc in all_procs:
+                print(format_proc(proc, all_procs[proc]))
+        elif(choice == 6):
+            print(get_connections())
+        elif(choice == 7):
             exit(0)
         else:
             choice = -1
@@ -70,7 +84,7 @@ def files_menu(path, action_type):
 
     for filename in glob.iglob(path + '/**', recursive=False):
         if os.path.isfile(filename):
-            print("(" + str(count) + ")" + filename)
+            print("(" + str(count) + ") " + filename)
             files_lst.append(filename)
             count+=1
     while choice != -1:

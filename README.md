@@ -9,10 +9,13 @@
 - Take a snapshot of your system, either on Windows or Linux.
 - Scan your system again and compare against your old snapshot and figure out which changes were made.
 - Find out if new files were created in your chosen system path.
+- Determine which processes are running and which were killed since last snapshot. 
 - Virus Total integration - Choose whether to compare file hashes with VT database to get detection report from dozens of AVs.
 - List specific folder files and easily choose which file to scan
 - Windows Registry integration - Keep an eye on common registy keys used by different malwares and get notified about new keys.
 - Analyze the PE struct of a file. Reports will be appended one after another with date so you can identifiy changes easily. 
+- Show all running processes and their actual paths.
+- List all connections and their corresponding PID.
 
 ## Configure
 - Change the scanning path in Conf/maltrace.conf to the path you would like to scan.
