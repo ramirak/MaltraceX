@@ -47,5 +47,5 @@ if os.name == 'nt':
         return registry_dict
 
 else:
-    def get_reg_dict():
+    def take_registry_snapshot():
         return {}

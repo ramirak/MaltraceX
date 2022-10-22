@@ -3,7 +3,7 @@ from Analysis.memory import take_processes_snapshot
 import Data.files as files
 import Data.enums as enums
 import Api.vt as vt
-from .registry import take_registry_snapshot
+from Analysis.registry import take_registry_snapshot
 from Utils.string_utils import *
 from .harddisk import *
 from threading import Lock

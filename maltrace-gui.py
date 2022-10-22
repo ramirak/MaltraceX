@@ -22,7 +22,10 @@ hover_color = "#25272A"
 font_color = "#F34D60"
 font_secondary_color = "#F34D60"
 font_family = "Segoe UI Semilight"
-icon = "Imgs/icon.ico"
+
+icon = None
+if os.path.isfile("Imgs/icon.ico"):
+    icon = "Imgs/icon.ico"
 
 progress_bar = None
 critical_function_lock = Lock()
@@ -135,7 +138,8 @@ def ask_user_input(header):
     window = tk.Toplevel()
     window.configure(bg=main_color)
     window.minsize(width=400, height=10)
-    window.iconbitmap(icon)
+    if icon != None:
+        window.iconbitmap(icon)
     center(window)
     args = {"width":25, "border":0, "bg":secondary_color, "fg":font_color, "font":("Serif", 11) }
 
@@ -162,7 +166,9 @@ def show_output_window(func ,args):
     window = tk.Toplevel()
     window.configure(bg=main_color)
     window.minsize(width=1500, height=750)
-    window.iconbitmap(icon)
+    if icon != None:
+        window.iconbitmap(icon)
+    
     center(window)
     
     T = Text(window, height=30, width= 150, bg=secondary_color, fg=font_color)
@@ -184,7 +190,9 @@ def show_output_window(func ,args):
 def show_log_window():
     window = tk.Toplevel()
     window.configure(bg=main_color)
-    window.iconbitmap(icon)
+    if icon != None:
+        window.iconbitmap(icon)
+    
     window.minsize(width=400, height=400)
     window.title("MaltraceX")
     center(window)
@@ -212,7 +220,9 @@ def show_log_window():
 def create_main_window():
     window = tk.Tk()
     window.configure(bg=main_color)
-    window.iconbitmap(icon)
+    if icon != None:
+        window.iconbitmap(icon)
+    
     window.minsize(width=800, height=500)
     window.title("MaltraceX")
     center(window)
@@ -277,3 +287,6 @@ header.pack(pady=10)
 progress_bar = create_progress_bar(root)
 create_buttons(root)
 root.mainloop()
+
+
+
