@@ -267,6 +267,8 @@ def create_buttons(root):
         b.pack(padx=10, pady=20, side=LEFT)
 
 
+if not os.path.exists("Logs"):
+    os.makedirs("Logs")
 root = create_main_window()
 header = tk.Label(text="MaltraceX", bg=main_color, fg=font_secondary_color, font=(font_family, 18, "bold", "italic"))
 header.bind('<Enter>', lambda e: e.widget.config(fg="white"))
