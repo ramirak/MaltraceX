@@ -1,4 +1,5 @@
 from Data.files import retrieve_from_file
+import Data.enums as enums
 import os
 
 ## Windows only
@@ -29,21 +30,20 @@ if os.name == 'nt':
             return HKEY_CURRENT_CONFIG
 
 
-    def get_reg_dict():
-        paths = retrieve_from_file("Conf/paths.conf")
-        data = retrieve_from_file(paths["registry"])
+    def take_registry_snapshot():
+        config = retrieve_from_file(enums.files.CONFIG.value)
         x = 0
         registry_dict = {}
-        for reg in data["commonReg"]:
+        for reg in config["monitored_registry"]:
             try:
-                key_s = reg["key"]
+                key_str = reg["key"]
                 path = reg["path"]
-                key = OpenKey(str_to_regkey(key_s), path, 0, KEY_READ)
+                key = OpenKey(str_to_regkey(key_str), path, 0, KEY_READ)
                 value = get_value(key)
-                registry_dict.update({path : [key_s,value]})
+                registry_dict.update({path : [key_str,value]})
                 x+=1
             except WindowsError:
-                continue
+                break
         return registry_dict
 
 else:

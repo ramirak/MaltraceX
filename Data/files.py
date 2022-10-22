@@ -1,4 +1,6 @@
+from genericpath import isfile
 import json, os
+import Data.enums as enums
 
 def dump_to_file(data,filename):
     with open(filename, 'w+') as convert_file:
@@ -18,13 +20,15 @@ def dump_list_to_file(lst, msg, log_file):
 
 
 def retrieve_from_file(filename):
-    if(os.path.isfile):
+    if os.path.isfile:
         with open(filename, 'r') as f:
             return json.load(f)
-    print("File " + filename + " does not exists")
-    exit(-1)
+    return enums.results.GENERAL_FAILURE.value
 
 
 def show_file_content(filename):
-    with open(filename, 'r') as f:
-        print(f.read())
+    if os.path.isfile(filename):
+        with open(filename, 'r') as f:
+            content = f.read()
+            return content
+    return ""

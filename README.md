@@ -16,16 +16,16 @@
 - Analyze the PE struct of a file. Reports will be appended one after another with date so you can identifiy changes easily. 
 - Show all running processes and their actual paths.
 - List all connections and their corresponding PID.
+- Whois Lookup for chosen domains.
 
 <p align="center">
-<img src="Imgs/Screenshot1.png" width="800">
+<img src="Imgs/Screenshot1.png" width="700">
 </p>
 
 ## Configure
-- Change the scanning path in Conf/maltrace.conf to the path you would like to scan.
+- Change the scanning path in maltrace.conf to the path you would like to scan.
 - Choose wheter you want to scan new hashes with Virus Total. If you do want, add your VT api key.
-- Adjust the registry scan by adding or removing paths from Conf/registry.conf.
-- Adjust logging path to your needs from Conf/paths.conf.
+- Adjust the registry scan by adding or removing paths in the config file.
 
 
 ## Example log

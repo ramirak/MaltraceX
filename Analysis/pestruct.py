@@ -1,5 +1,7 @@
+from datetime import datetime
 import pefile
-
+import Data.enums as enums
+import Data.files as files
 
 def pe_load(filename):
     try:
@@ -34,3 +36,21 @@ def get_imported_functions(entry):
 
 def get_dos_headers(pe):
     return pe.DOS_HEADER.dump()
+
+
+def write_pe_report(chosen_file):
+    pe = pe_load(chosen_file)
+    if pe != None:
+        dlls, funcs = get_dlls(pe, True)
+        log_file = enums.files.PESCAN.value
+        with open(log_file, "a+") as logfile:
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            logfile.write("\n-------------------- " + chosen_file + ": " + dt_string + " --------------------\n")
+        files.dump_list_to_file(get_dos_headers(pe), "\n----------- DOS Headers: -----------\n", log_file)
+        files.dump_list_to_file(dlls, "\n----------- Dll imports: -----------\n", log_file)
+        files.dump_list_to_file(funcs, "\n----------- Functions: -----------\n", log_file)
+        files.dump_list_to_file(pe.sections, "\n----------- Sections: -----------\n", log_file)
+        return enums.results.SUCCESS.value
+    else:
+        return enums.results.NON_PE_FILE.value

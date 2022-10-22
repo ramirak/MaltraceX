@@ -1,8 +1,9 @@
-from logging import exception
 import psutil
 from datetime import datetime
 
-def get_procs():
+from Utils.string_utils import format_proc
+
+def take_processes_snapshot():
     pids = psutil.pids()
     proc_list = {}
     for pid in pids: 
@@ -23,6 +24,13 @@ def get_procs():
             continue
     return proc_list
 
+
+def get_processes():
+    all_procs = take_processes_snapshot()
+    processes = ""
+    for proc in all_procs:
+        processes += format_proc(proc, all_procs[proc]) + "\n"
+    return processes
 
 def get_connections():
     conn_str = ""

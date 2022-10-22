@@ -1,14 +1,11 @@
 import os, glob
-from Analysis.memory import get_connections, get_procs
-from Analysis.pestruct import get_dlls, get_dos_headers, pe_load
+from Analysis.memory import get_connections, get_processes
+from Analysis.pestruct import write_pe_report
 import Data.files as files
 import Analysis.integrity as integrity
-from Api.vt import get_report
-from datetime import datetime
-from Utils.string_utils import format_proc
-
-conf_file = "Conf/maltrace.conf"
-paths_file = "Conf/paths.conf"
+from Api.vt import write_vt_report
+import Data.enums as enums
+import whois
 
 logo = ("               .__   __                      \n"
 "  _____ _____  |  |_/  |_____________    ____  ____  \n"
@@ -17,8 +14,6 @@ logo = ("               .__   __                      \n"
 "|__|_|  (____  /____/__|  |__|  (____  /\___  >___  >\n"
 "      \/     \/                      \/     \/    \/ \n")
 
-
-VT_SCAN, PE_ANALYZE, *_ = range(5)
 
 def init():
     if not os.path.exists("Logs"):
@@ -29,17 +24,9 @@ def init():
    
 
 def main_menu():
-    sys_map, reg_map, proc_map = {} , {}, {}
-    conf, paths = files.retrieve_from_file(conf_file), files.retrieve_from_file(paths_file)
-    scan_path, hashes_path, registry_path, reglog_path, procs_path = conf["path"], paths["hashes"], paths["registry"], paths["reglog"], paths["procs"]
-    scan, api_k = bool(conf["scan"]), conf["vt_key"]
-
-    if os.path.exists(hashes_path):
-        sys_map = files.retrieve_from_file(hashes_path)
-    if os.path.exists(registry_path):
-        reg_map = files.retrieve_from_file(registry_path)    
-    if os.path.exists(procs_path):
-        proc_map = files.retrieve_from_file(procs_path)    
+    conf = files.retrieve_from_file(enums.files.CONFIG.value)
+    virus_total_scan, virus_total_key = bool(conf["virus_total_scan"]), conf["virus_total_key"]
+    snapshot_path = conf["snapshot_path"]
 
     choice = -1
     while(choice == -1):
@@ -47,36 +34,34 @@ def main_menu():
         print("(2) Test system integrity")
         print("(3) Scan a file")
         print("(4) Analyze PE")
-        print("(5) Show processes")
-        print("(6) Show connections")
-        print("(7) Exit")
+        print("(5) Whois lookup")
+        print("(6) Show processes")
+        print("(7) Show connections")
+        print("(8) Exit")
 
         choice = assert_choice(input("\n> "))
         if(choice == 1):
-            sys_map, reg_map, proc_map = integrity.take_snapshot(scan_path)
-            files.dump_to_file(sys_map, hashes_path)
-            files.dump_to_file(reg_map, reglog_path)
-            files.dump_to_file(proc_map, procs_path)
+            integrity.take_snapshot(snapshot_path)
         elif(choice == 2):
-            integrity.check_integrity(sys_map, reg_map, proc_map,scan_path, scan)
+            integrity.check_integrity(snapshot_path, virus_total_scan)
         elif(choice == 3):
-            if api_k == "":
+            if virus_total_key == "":
                 print("\nPlease set your Virus Total api key first\n")
                 continue
             path = input("\nEnter containing folder path > \n")
             if os.path.isdir(path):
-                files_menu(path, VT_SCAN)
+                files_menu(path, enums.operations.VIRUS_TOTAL_SCAN.value)
         elif(choice == 4):
             path = input("\nEnter containing folder path > \n")
             if os.path.isdir(path):
-                files_menu(path, PE_ANALYZE)
+                files_menu(path, enums.operations.PE_ANALYZE.value)
         elif(choice == 5):
-            all_procs = get_procs()
-            for proc in all_procs:
-                print(format_proc(proc, all_procs[proc]))
+            print(whois.whois(input("Please enter a valid domain: ")))
         elif(choice == 6):
-            print(get_connections())
+            print(get_processes())
         elif(choice == 7):
+            print(get_connections())
+        elif(choice == 8):
             exit(0)
         else:
             choice = -1
@@ -85,7 +70,6 @@ def main_menu():
 def files_menu(path, action_type):
     count, choice = 1, 0
     files_lst = []
-    paths = files.retrieve_from_file("Conf/paths.conf")
 
     for filename in glob.iglob(path + '/**', recursive=False):
         if os.path.isfile(filename):
@@ -100,30 +84,10 @@ def files_menu(path, action_type):
             print("Invalid file ID")
             continue
         chosen_file = files_lst[choice-1]
-        if action_type == VT_SCAN:
-            file_hash = integrity.sha256sum(chosen_file)
-            log_file = paths["report"]
-            with open(log_file, "a+") as logfile:
-                    now = datetime.now()
-                    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                    logfile.write("\n-------------------- " + chosen_file + " - " + file_hash + ": " + dt_string + " --------------------\n")
-                    logfile.write(get_report(file_hash, False) + "\n")
-        elif action_type == PE_ANALYZE:
-            pe = pe_load(chosen_file)
-            if pe != None:
-                dlls, funcs = get_dlls(pe, True)
-                log_file = paths["pefile"]
-                with open(log_file, "a+") as logfile:
-                    now = datetime.now()
-                    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                    logfile.write("\n-------------------- " + chosen_file + ": " + dt_string + " --------------------\n")
-                files.dump_list_to_file(get_dos_headers(pe), "\n----------- DOS Headers: -----------\n", log_file)
-                files.dump_list_to_file(dlls, "\n----------- Dll imports: -----------\n", log_file)
-                files.dump_list_to_file(funcs, "\n----------- Functions: -----------\n", log_file)
-                files.dump_list_to_file(pe.sections, "\n----------- Sections: -----------\n", log_file)
-                print("Done, Log file can be found in: " + log_file)
-            else:
-                print("Non PE file")
+        if action_type == enums.operations.VIRUS_TOTAL_SCAN.value:
+            write_vt_report(chosen_file)
+        elif action_type == enums.operations.PE_ANALYZE.value:
+            write_pe_report(chosen_file)
 
 
 def assert_choice(choice):
