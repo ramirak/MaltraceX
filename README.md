@@ -23,6 +23,15 @@
 - Choose wheter you want to scan new hashes with Virus Total. If you do want, add your VT api key.
 - Adjust the registry scan by adding or removing paths in the config file.
 
+## Syntax
+```
+options:
+  -h, --help
+  -s SCAN, --scan SCAN   -  full path to file
+  -a ANALYZE, --analyze ANALYZE  -  full path to file
+  -t, --take-snapshot   -   Take snapshot of a defined folder
+  -c, --check-integrity   -   Check the integrity after a snapshot was created                     
+```
 
 ## Example log
 
