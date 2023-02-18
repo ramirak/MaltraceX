@@ -1,11 +1,9 @@
-import os, glob
-from Analysis.memory import get_connections, get_processes
+import os
 from Analysis.pestruct import write_pe_report
-import Data.files as files
 import Analysis.integrity as integrity
 from Api.vt import write_vt_report
 import Data.enums as enums
-import whois
+import argparse
 
 logo = ("               .__   __                      \n"
 "  _____ _____  |  |_/  |_____________    ____  ____  \n"
@@ -14,88 +12,50 @@ logo = ("               .__   __                      \n"
 "|__|_|  (____  /____/__|  |__|  (____  /\___  >___  >\n"
 "      \/     \/                      \/     \/    \/ \n")
 
+parser = argparse.ArgumentParser(description="Maltrace - scan your system integrity and find traces of malwares.")
+parser.add_argument("-s", "--scan", help = "full path to file", required = False, default = "")
+parser.add_argument("-a", "--analyze", help = "full path to file", required = False, default = "")
+parser.add_argument("-t", "--take-snapshot", help = "Take snapshot of a defined folder", required = False, action='store_true')
+parser.add_argument("-c", "--check-integrity", help = "Check the integrity after a snapshot was created", required = False, action='store_true')
 
+argument = parser.parse_args()
+   
 def init():
     if not os.path.exists("Logs"):
         os.makedirs("Logs")
     print(logo)
-    while(True):
-        main_menu()
-   
-
-def main_menu():
-    conf = files.retrieve_from_file(enums.files.CONFIG.value)
-    virus_total_scan, virus_total_key = bool(conf["virus_total_scan"]), conf["virus_total_key"]
-    snapshot_path = conf["snapshot_path"]
-
-    choice = -1
-    while(choice == -1):
-        print("(1) Take system Snapshot")
-        print("(2) Test system integrity")
-        print("(3) Scan a file")
-        print("(4) Analyze PE")
-        print("(5) Whois lookup")
-        print("(6) Show processes")
-        print("(7) Show connections")
-        print("(8) Exit")
-
-        choice = assert_choice(input("\n> "))
-        if(choice == 1):
-            integrity.take_snapshot(snapshot_path)
-        elif(choice == 2):
-            integrity.check_integrity(snapshot_path, virus_total_scan)
-        elif(choice == 3):
-            if virus_total_key == "":
-                print("\nPlease set your Virus Total api key first\n")
-                continue
-            path = input("\nEnter containing folder path > \n")
-            if os.path.isdir(path):
-                files_menu(path, enums.operations.VIRUS_TOTAL_SCAN.value)
-        elif(choice == 4):
-            path = input("\nEnter containing folder path > \n")
-            if os.path.isdir(path):
-                files_menu(path, enums.operations.PE_ANALYZE.value)
-        elif(choice == 5):
-            print(whois.whois(input("Please enter a valid domain: ")))
-        elif(choice == 6):
-            print(get_processes())
-        elif(choice == 7):
-            print(get_connections())
-        elif(choice == 8):
-            exit(0)
-        else:
-            choice = -1
+    
+    if argument.take_snapshot:
+        print("Taking snapshot. Please wait ..")
+        parse_res(integrity.take_snapshot())
+    elif argument.check_integrity:
+        print("Checking system integrity. Please wait ..")
+        parse_res(integrity.check_integrity())
+    elif argument.scan != "":
+        print("Trying to scan the chosen file, please wait for the report to complete ..")
+        parse_res(write_vt_report(argument.scan))
+    elif argument.analyze != "":
+        print("Analyzing file, please wait for the report to complete ..")
+        parse_res(write_pe_report(argument.analyze))
 
 
-def files_menu(path, action_type):
-    count, choice = 1, 0
-    files_lst = []
-
-    for filename in glob.iglob(path + '/**', recursive=False):
-        if os.path.isfile(filename):
-            print("(" + str(count) + ") " + filename)
-            files_lst.append(filename)
-            count+=1
-    while choice != -1:
-        choice = assert_choice(input("\nFile ID to scan > "))
-        if choice == -1:
-            return
-        if choice <= 0 or choice > len(files_lst):
-            print("Invalid file ID")
-            continue
-        chosen_file = files_lst[choice-1]
-        if action_type == enums.operations.VIRUS_TOTAL_SCAN.value:
-            write_vt_report(chosen_file)
-        elif action_type == enums.operations.PE_ANALYZE.value:
-            write_pe_report(chosen_file)
-
-
-def assert_choice(choice):
-    try:
-        choice = int(choice)
-    except:
-        return -1;
-    return choice
+def parse_res(res):
+    if res == enums.results.GENERAL_FAILURE.value:
+        print("General Failure.")
+    elif res == enums.results.API_KEY_NOT_FOUND.value:
+        print("Please set your API key.")
+    elif res == enums.results.SNAPSHOT_NOT_FOUND.value:
+        print("No snapshot found.")
+    elif res == enums.results.NO_MATCH_FOUND.value:
+        print("No match was found.")
+    elif res == enums.results.NON_PE_FILE.value:
+        print("Non PE file.")
+    elif res == enums.results.FINISHED_WITH_ERRORS.value:
+        print("Finished with errors.")
+    elif res == enums.results.FILE_NOT_FOUND.value:
+        print("File not found.")
+    elif res == enums.results.SUCCESS.value:
+        print("Done.")
 
 
 init()

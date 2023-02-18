@@ -6,68 +6,63 @@ import Api.vt as vt
 from Analysis.registry import take_registry_snapshot
 from Utils.string_utils import *
 from .harddisk import *
-from threading import Lock
 
-critical_function_lock = Lock()
-
-def take_snapshot(path):
-    if critical_function_lock.locked():
-        return enums.results.ALREADY_RUNNING.value
-    with critical_function_lock:
-        try:    
-            disk_map = take_disk_snapshot(path)
-            reg_map = take_registry_snapshot()
-            proc_map = take_processes_snapshot()
-           
-            files.dump_to_file(disk_map, enums.files.HASHES.value)
-            files.dump_to_file(reg_map, enums.files.REGISTRY.value)
-            files.dump_to_file(proc_map, enums.files.PROCESSES.value)
-            return enums.results.SUCCESS.value
-        except:
-            return enums.results.GENERAL_FAILURE.value
+def take_snapshot():
+    try:    
+        disk_map = take_disk_snapshot()
+        reg_map = take_registry_snapshot()
+        proc_map = take_processes_snapshot()
+        files.dump_to_file(disk_map, enums.files.HASHES.value)
+        files.dump_to_file(reg_map, enums.files.REGISTRY.value)
+        files.dump_to_file(proc_map, enums.files.PROCESSES.value)
+        return enums.results.SUCCESS.value
+    except:
+        return enums.results.GENERAL_FAILURE.value
 
 
-def check_integrity(path, scan):
-    if critical_function_lock.locked():
-        return enums.results.ALREADY_RUNNING.value
-    with critical_function_lock:
-        try:    
-            sys_map, reg_map, proc_map = {} , {}, {}
+def check_integrity():
+    try:
+        conf = files.retrieve_from_file(enums.files.CONFIG.value)
+        path = conf["snapshot_path"]
+        scan = bool(conf["virus_total_scan"])
 
-            if os.path.exists(enums.files.HASHES.value):
-                sys_map = files.retrieve_from_file(enums.files.HASHES.value)
-            if os.path.exists(enums.files.REGISTRY.value):
-                reg_map = files.retrieve_from_file(enums.files.REGISTRY.value)    
-            if os.path.exists(enums.files.PROCESSES.value):
-                proc_map = files.retrieve_from_file(enums.files.PROCESSES.value)    
+        sys_map, reg_map, proc_map = {} , {}, {}
 
-            ## User should first create a system snapshot
-            if not len(sys_map) or not len(reg_map) or not len(proc_map):
-                return enums.results.SNAPSHOT_NOT_FOUND.value
+        if os.path.exists(enums.files.HASHES.value):
+            sys_map = files.retrieve_from_file(enums.files.HASHES.value)
+        if os.path.exists(enums.files.REGISTRY.value):
+            reg_map = files.retrieve_from_file(enums.files.REGISTRY.value)    
+        if os.path.exists(enums.files.PROCESSES.value):
+            proc_map = files.retrieve_from_file(enums.files.PROCESSES.value)    
 
-            f = open(enums.files.TRACES.value, "w")
-            f.write(print_header("MaltraceX Log File"))
-            
-            ## First check system files
-            r1 = inspect_files(path, sys_map, scan, f)
-            ## Check changes to chosen registry locations
-            r2 = inspect_registry(reg_map, f)
-            ## Check memory for new running processes
-            r3 = inspect_procs(proc_map, f)
-            f.close()
-            files.show_file_content(enums.files.TRACES.value)
+        ## User should first create a system snapshot
+        if not len(sys_map) or not len(reg_map) or not len(proc_map):
+            return enums.results.SNAPSHOT_NOT_FOUND.value
 
-            err = enums.results.GENERAL_FAILURE.value
-            if r1 == err or r2 == err or r3 == err:
-                return enums.results.FINISHED_WITH_ERRORS.value
-            return enums.results.SUCCESS.value
-        except Exception as e:
-            return enums.results.GENERAL_FAILURE.value
+        f = open(enums.files.TRACES.value, "w")
+        f.write(print_header("MaltraceX Log File"))
+        
+        ## First check system files
+        r1 = inspect_files(path, sys_map, scan, f)
+        ## Check changes to chosen registry locations
+        r2 = inspect_registry(reg_map, f)
+        ## Check memory for new running processes
+        r3 = inspect_procs(proc_map, f)
+        f.close()
+        files.show_file_content(enums.files.TRACES.value)
+
+        err = enums.results.GENERAL_FAILURE.value
+        if r1 == err or r2 == err or r3 == err:
+            return enums.results.FINISHED_WITH_ERRORS.value
+        return enums.results.SUCCESS.value
+    except Exception as e:
+        return enums.results.GENERAL_FAILURE.value
 
 
 def inspect_files(path, sys_map, scan, f):
     f.write(print_header("Explorer lookup:"))
     for filename in glob.iglob(path + '**', recursive=True):
+        print(filename)
         if os.path.isfile(filename):
             if(filename not in sys_map):
                 f.write("\nFound new trace: " + filename + " was created on: " + str(time.ctime(os.path.getmtime(filename)) + "\n"))

@@ -37,6 +37,8 @@ def get_report(hash):
 
 def write_vt_report(chosen_file):
     file_hash = sha256sum(chosen_file)
+    if file_hash == None:
+        return enums.results.FILE_NOT_FOUND.value
     report = get_report(file_hash)
     if report == enums.results.API_KEY_NOT_FOUND.value or report == enums.results.NO_MATCH_FOUND.value:
         return report

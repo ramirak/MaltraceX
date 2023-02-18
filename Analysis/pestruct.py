@@ -2,12 +2,15 @@ from datetime import datetime
 import pefile
 import Data.enums as enums
 import Data.files as files
+import os
 
 def pe_load(filename):
+    if os.path.isdir(filename) or not os.path.exists(filename):
+        return enums.results.FILE_NOT_FOUND.value
     try:
         return pefile.PE(filename)
     except:
-        return
+        return enums.results.NON_PE_FILE.value
 
 
 def get_dlls(pe, additional_info):
@@ -40,17 +43,16 @@ def get_dos_headers(pe):
 
 def write_pe_report(chosen_file):
     pe = pe_load(chosen_file)
-    if pe != None:
-        dlls, funcs = get_dlls(pe, True)
-        log_file = enums.files.PESCAN.value
-        with open(log_file, "a+") as logfile:
-            now = datetime.now()
-            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-            logfile.write("\n-------------------- " + chosen_file + ": " + dt_string + " --------------------\n")
-        files.dump_list_to_file(get_dos_headers(pe), "\n----------- DOS Headers: -----------\n", log_file)
-        files.dump_list_to_file(dlls, "\n----------- Dll imports: -----------\n", log_file)
-        files.dump_list_to_file(funcs, "\n----------- Functions: -----------\n", log_file)
-        files.dump_list_to_file(pe.sections, "\n----------- Sections: -----------\n", log_file)
-        return enums.results.SUCCESS.value
-    else:
-        return enums.results.NON_PE_FILE.value
+    if pe == enums.results.FILE_NOT_FOUND.value or pe == enums.results.NON_PE_FILE.value:
+        return pe
+    dlls, funcs = get_dlls(pe, True)
+    log_file = enums.files.PESCAN.value
+    with open(log_file, "a+") as logfile:
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        logfile.write("\n-------------------- " + chosen_file + ": " + dt_string + " --------------------\n")
+    files.dump_list_to_file(get_dos_headers(pe), "\n----------- DOS Headers: -----------\n", log_file)
+    files.dump_list_to_file(dlls, "\n----------- Dll imports: -----------\n", log_file)
+    files.dump_list_to_file(funcs, "\n----------- Functions: -----------\n", log_file)
+    files.dump_list_to_file(pe.sections, "\n----------- Sections: -----------\n", log_file)
+    return enums.results.SUCCESS.value
