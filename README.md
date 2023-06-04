@@ -13,6 +13,7 @@
 - Virus Total integration - Choose whether to compare file hashes with VT database to get detection report from dozens of AVs.
 - Windows Registry integration - Keep an eye on common registy keys used by different malwares and get notified about new keys.
 - Analyze the PE struct of a file. Reports will be appended one after another with date so you can identifiy changes easily. 
+- NEW - Live mode inspection - Take snapshot, sniff network, execute a malware and analyze in one command. 
 
 <p align="center">
 <img src="Imgs/demo.gif" width="850">
@@ -31,6 +32,8 @@ options:
   -a ANALYZE, --analyze ANALYZE  -  full path to file
   -t, --take-snapshot   -   Take snapshot of a defined folder
   -c, --check-integrity   -   Check the integrity after a snapshot was created                     
+  -l, --live-mode
+  -d, --duration 
 ```
 
 ## Example log

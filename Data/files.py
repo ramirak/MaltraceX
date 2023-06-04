@@ -1,6 +1,6 @@
-from genericpath import isfile
 import json, os
 import Data.enums as enums
+
 
 def dump_to_file(data,filename):
     with open(filename, 'w+') as convert_file:
@@ -23,7 +23,15 @@ def retrieve_from_file(filename):
     if os.path.isfile:
         with open(filename, 'r') as f:
             return json.load(f)
-    return enums.results.GENERAL_FAILURE.value
+    return enums.results.FILE_NOT_FOUND.value
+
+
+def retrieve_lines_from_file(filename):
+    lines = []
+    with open(filename) as file:
+        for line in file:
+            lines.append(line)
+    return lines
 
 
 def show_file_content(filename):

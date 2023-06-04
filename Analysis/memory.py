@@ -1,7 +1,7 @@
 import psutil
 from datetime import datetime
 
-from Utils.string_utils import format_proc
+from Data.report import format_proc
 
 def take_processes_snapshot():
     pids = psutil.pids()

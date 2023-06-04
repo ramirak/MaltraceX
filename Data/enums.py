@@ -7,6 +7,7 @@ class files(Enum):
     TRACES = p + "traces.mt"
     HASHES = p + "hashes.mt"
     PESCAN = p + "pescan.mt"
+    TDUMP  = p + "tdump.mt"
     REPORT = p + "reports.mt"
     REGISTRY = p + "registry.mt"
     PROCESSES = p + "processes.mt"
