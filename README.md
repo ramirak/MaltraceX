@@ -2,7 +2,7 @@
 ## Check your system integrity and scan for malicious files
 
 <p align="center">
-<img src="Imgs/maltrace_logo.jpg" width="300">
+<img src="Imgs/logo.jpg" width="300">
 </p>
 
 ## Features 
