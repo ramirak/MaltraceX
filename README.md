@@ -14,7 +14,7 @@
 - Perform whois on unidentified IPs.
 - Choose whether to compare found files with VT database to get detection report from dozens of AVs.
 - Scan a specific file hash against Virus total database.
-- Analyze the PE struct of a file. Reports will be appended one after another with date so you can identifiy changes easily. 
+- Analyze the PE struct of a file.
 
 <p align="center">
 <img src="Imgs/demo.gif" width="850">
