@@ -6,11 +6,13 @@ import os
 
 def pe_load(filename):
     if os.path.isdir(filename) or not os.path.exists(filename):
-        return enums.results.FILE_NOT_FOUND.value
+        print("File not found.")
+        return False
     try:
         return pefile.PE(filename)
     except:
-        return enums.results.NON_PE_FILE.value
+        print("File is not an executable.")
+        return False
 
 
 def get_dlls(pe, additional_info):
@@ -25,7 +27,7 @@ def get_dlls(pe, additional_info):
         if additional_info:
             return dll_list, pe_imports
     except:
-        return None
+        print("Failed to ")
     return dll_list
 
 
@@ -43,8 +45,8 @@ def get_dos_headers(pe):
 
 def write_pe_report(chosen_file):
     pe = pe_load(chosen_file)
-    if pe == enums.results.FILE_NOT_FOUND.value or pe == enums.results.NON_PE_FILE.value:
-        return pe
+    if not pe:
+        return False
     dlls, funcs = get_dlls(pe, True)
     log_file = enums.files.PESCAN.value
     with open(log_file, "a+") as logfile:
@@ -55,4 +57,4 @@ def write_pe_report(chosen_file):
     files.dump_list_to_file(dlls, "\n----------- Dll imports: -----------\n", log_file)
     files.dump_list_to_file(funcs, "\n----------- Functions: -----------\n", log_file)
     files.dump_list_to_file(pe.sections, "\n----------- Sections: -----------\n", log_file)
-    return enums.results.SUCCESS.value
+    return True

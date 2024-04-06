@@ -2,9 +2,9 @@ import json, os
 import Data.enums as enums
 
 
-def dump_to_file(data,filename):
+def dump_to_file(data, filename):
     with open(filename, 'w+') as convert_file:
-        convert_file.write(json.dumps(data))
+        convert_file.write(json.dumps(data, indent=4))    
 
 
 def dump_list_to_file(lst, msg, log_file):
@@ -20,10 +20,15 @@ def dump_list_to_file(lst, msg, log_file):
 
 
 def retrieve_from_file(filename):
-    if os.path.isfile:
-        with open(filename, 'r') as f:
-            return json.load(f)
-    return enums.results.FILE_NOT_FOUND.value
+    try:
+        if os.path.isfile:
+            with open(filename, 'r') as f:
+                return json.load(f)
+        print(filename + " was not found.")
+        return False
+    except:
+        print("Error parsing file " + filename)
+        return False
 
 
 def retrieve_lines_from_file(filename):

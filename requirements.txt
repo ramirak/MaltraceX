@@ -1,0 +1,5 @@
+scapy
+pefile
+python-whois
+WMI
+requests

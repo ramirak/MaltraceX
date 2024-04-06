@@ -3,18 +3,20 @@ import requests
 import json 
 import Data.files as files
 import Data.enums as enums
-from Analysis.harddisk import sha256sum
+from Modules.harddisk import sha256sum
 
 
 def get_report(filename, hash):
     conf = files.retrieve_from_file(enums.files.CONFIG.value)
-    if conf == enums.results.FILE_NOT_FOUND.value:
-        return conf
+    if not conf:
+        print("Config file does not exist.")
+        return False
 
     api_k = conf["virus_total_key"]
 
     if api_k == "":
-        return enums.results.API_KEY_NOT_FOUND.value
+        print("No api key was set.")
+        return False
   
     result = "\n Checking " + filename + " - " + hash + ":\n"
 
@@ -22,7 +24,7 @@ def get_report(filename, hash):
     headers = {"accept": "application/json", "x-apikey": api_k}
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
-        return enums.results.NO_MATCH_FOUND.value
+        return "No match."
     
     res = json.loads(response.text)
     report_attr = res["data"]["attributes"]

@@ -6,14 +6,15 @@
 </p>
 
 ## Features 
-- Take a snapshot of your system, either on Windows or Linux.
-- Scan your system again and compare against your old snapshot and figure out which changes were made.
-- Find out if new files were created in your chosen system path.
-- Determine which processes are running and which were killed since last snapshot. 
-- Virus Total integration - Choose whether to compare file hashes with VT database to get detection report from dozens of AVs.
-- Windows Registry integration - Keep an eye on common registy keys used by different malwares and get notified about new keys.
+- Take a snapshot of your system files.
+- Windows Registry integration - Take snapshot of the entire registry or chosen keys and get notified about changes.
+- Scan your system and compare against your old snapshot to figure out which changes were made.
+- Determine which processes were spawned. Can run in whitelist mode to later check if new unrecognized processes were found. 
+- Capture network traffic using built in packet sniffer. Can run in whitelist mode to later check if new unrecognized IPs were contacted.
+- Perform whois on unidentified IPs.
+- Choose whether to compare found files with VT database to get detection report from dozens of AVs.
+- Scan a specific file hash against Virus total database.
 - Analyze the PE struct of a file. Reports will be appended one after another with date so you can identifiy changes easily. 
-- NEW - Live mode inspection - Take snapshot, sniff network, execute a malware and analyze in one command. 
 
 <p align="center">
 <img src="Imgs/demo.gif" width="850">
@@ -21,19 +22,30 @@
 
 ## Configure
 - Change the scanning path in maltrace.conf to the path you would like to scan.
-- Choose wheter you want to scan new hashes with Virus Total. If you do want, add your VT api key.
+- Optional - add your VT api key.
 - Adjust the registry scan by adding or removing paths in the config file.
 
 ## Syntax
 ```
+usage: maltrace.py [ -t -f / -c -o -s -f / -vt <path> / -a <path> / -sn -w -d -i -o / -p -w -d -o ]
+
+Maltrace - scan your system integrity and find traces of malwares.
+
 options:
-  -h, --help
-  -s SCAN, --scan SCAN   -  full path to file
-  -a ANALYZE, --analyze ANALYZE  -  full path to file
-  -t, --take-snapshot   -   Take snapshot of a defined folder
-  -c, --check-integrity   -   Check the integrity after a snapshot was created                     
-  -l, --live-mode
-  -d, --duration 
+  -h, --help                          show this help message and exit
+  -t, --take-snapshot                 Take snapshot for defined folder and registy keys.
+  -c, --check-integrity               Check the integrity of the system.
+  -p, --process-listener              Monitor spawned processes.
+  -v <path>, --virus-total <path>     Scan a file with virus total.
+  -a <path>, --analyze <path>         Inspect executable properties.
+  -sn, --sniff                        Sniff network traffic.
+  -o, --output                        Output to file.
+  -f, --full                          Perform full system check.
+  -s, --scan-findings                 scan found files.
+  -w, --whitelist                     Create whitelist.
+  -i, --info                          Get more information.
+  -d <seconds>, --duration <seconds>  Duration in seconds.
+
 ```
 
 ## Example log

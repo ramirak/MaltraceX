@@ -2,11 +2,11 @@ import os, glob, hashlib
 import Data.enums as enums
 import Data.files as files
 
-def take_disk_snapshot():
+def collect_files():
     conf = files.retrieve_from_file(enums.files.CONFIG.value)
-    if conf == enums.results.FILE_NOT_FOUND.value:
-        return conf
-    path = conf["snapshot_path"]
+    if not conf:
+        return False
+    path = conf["snapshot_path"] + "\\"
     sys_map = {}
     for filename in glob.iglob(path + "**", recursive=True):
         if os.path.isfile(filename):
@@ -16,7 +16,7 @@ def take_disk_snapshot():
 
 def sha256sum(filename):
     if os.path.isdir(filename) or not os.path.exists(filename):
-        return enums.results.FILE_NOT_FOUND.value
+        return False
 
     h  = hashlib.sha256()
     b  = bytearray(128*1024)
@@ -26,5 +26,5 @@ def sha256sum(filename):
             while n := f.readinto(mv):
                 h.update(mv[:n])
     except:
-        return enums.results.GENERAL_FAILURE.value
+        return False
     return h.hexdigest()
