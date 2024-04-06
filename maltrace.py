@@ -16,7 +16,7 @@ logo = ("               .__   __                      \n"
 
 print(logo)
 
-usage = "[ -t -f / -c -o -s -f / -vt <path> / -a <path> / -sn -w -d -i -o / -p -w -d -o ]"
+usage = "[ -t -f / -c -o -s -f / -vt <path> / -a <path> / -sn -w -d -i -e -o / -p -w -d -o ]"
 
 parser = argparse.ArgumentParser(description="Maltrace - scan your system integrity and find traces of malwares.", usage="%(prog)s " + usage,formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=60))
 # Main operations
@@ -33,6 +33,7 @@ parser.add_argument("-s", "--scan-findings", help = "scan found files.", require
 parser.add_argument("-w", "--whitelist", help = "Create whitelist.", required = False, action='store_true')
 parser.add_argument("-i", "--info", help = "Get more information.", required = False, action='store_true')
 parser.add_argument("-d", "--duration", metavar="<seconds>", help = "Duration in seconds.", required = False, default= "300")
+parser.add_argument("-e", "--filter", metavar="<npcap filter>", help = "Filter packet capture.", required = False, default= "")
 
 
 argument = parser.parse_args()
@@ -68,7 +69,7 @@ def init():
         if argument.whitelist:
             take_connections_snapshot(int(argument.duration), "")
         else:
-            inspect_network(int(argument.duration), "", argument.output, argument.info)
+            inspect_network(int(argument.duration), str(argument.filter), argument.output, argument.info)
     elif argument.analyze != "":
         print("Analyzing file, please wait for the report to complete ..")
         write_pe_report(argument.analyze)

@@ -27,24 +27,25 @@
 
 ## Syntax
 ```
-usage: maltrace.py [ -t -f / -c -o -s -f / -vt <path> / -a <path> / -sn -w -d -i -o / -p -w -d -o ]
+usage: maltrace.py [ -t -f / -c -o -s -f / -vt <path> / -a <path> / -sn -w -d -i -e -o / -p -w -d -o ]
 
 Maltrace - scan your system integrity and find traces of malwares.
 
 options:
-  -h, --help                          show this help message and exit
-  -t, --take-snapshot                 Take snapshot for defined folder and registy keys.
-  -c, --check-integrity               Check the integrity of the system.
-  -p, --process-listener              Monitor spawned processes.
-  -v <path>, --virus-total <path>     Scan a file with virus total.
-  -a <path>, --analyze <path>         Inspect executable properties.
-  -sn, --sniff                        Sniff network traffic.
-  -o, --output                        Output to file.
-  -f, --full                          Perform full system check.
-  -s, --scan-findings                 scan found files.
-  -w, --whitelist                     Create whitelist.
-  -i, --info                          Get more information.
-  -d <seconds>, --duration <seconds>  Duration in seconds.
+  -h, --help                                  show this help message and exit
+  -t, --take-snapshot                         Take snapshot for defined folder and registy keys.
+  -c, --check-integrity                       Check the integrity of the system.
+  -p, --process-listener                      Monitor spawned processes.
+  -v <path>, --virus-total <path>             Scan a file with virus total.
+  -a <path>, --analyze <path>                 Inspect executable properties.
+  -sn, --sniff                                Sniff network traffic.
+  -o, --output                                Output to file.
+  -f, --full                                  Perform full system check.
+  -s, --scan-findings                         scan found files.
+  -w, --whitelist                             Create whitelist.
+  -i, --info                                  Get more information.
+  -d <seconds>, --duration <seconds>          Duration in seconds.
+  -e <npcap filter>, --filter <npcap filter>  Filter packet capture.
 
 ```
 

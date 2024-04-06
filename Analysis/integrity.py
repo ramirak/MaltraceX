@@ -109,12 +109,13 @@ def inspect_registry(reg_map, log_mode):
 
 def inspect_procs(duration, log_mode):
     try:
-        if os.name == 'nt':
-            proc_whitelist = files.retrieve_from_file(enums.files.PROCESSES.value)
-            if not proc_whitelist:
-                return False
+        if os.name == 'nt':            
             processes = collect_processes(duration)
             if not processes:
+                return False
+
+            proc_whitelist = files.retrieve_from_file(enums.files.PROCESSES.value)
+            if not proc_whitelist:
                 return False
 
             do_print("\nProcesses that were not found in the whitelist file: ", log_mode)
@@ -130,11 +131,12 @@ def inspect_procs(duration, log_mode):
 
 def inspect_network(duration, flt, log_mode, do_whois):
     try:
-        conns_whitelist = files.retrieve_from_file(enums.files.CAPTURE.value)
-        if not conns_whitelist:
-            return False
         conns = catpure_packets(duration, flt)
         if not conns:
+            return False
+        
+        conns_whitelist = files.retrieve_from_file(enums.files.CAPTURE.value)
+        if not conns_whitelist:
             return False
         
         do_print("\nConnections that were not found in the whitelist file: ", log_mode)
